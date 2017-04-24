@@ -1,0 +1,48 @@
+---
+title: "Data"
+author: "Qi Wang"
+date: "4/21/2017"
+output: pdf_document
+---
+
+```{r}
+library(dplyr)
+
+data = read.csv('globalterrorismdb_0616dist.csv', header = T)
+regions = data[,c('region','region_txt')]
+reg_uniq = unique(regions) 
+reg_uniq = reg_uniq[order(reg_uniq$region),]
+n = nrow(reg_uniq)
+
+for (i in 1:n){
+  var = paste0("data",i,"_count")
+  assign(var, data %>% filter(region == i) %>% group_by(iyear) %>% summarise(count = n()))
+}
+
+par(mfrow = c(3,4))
+for(i in 1:n){
+  plot(get(paste0("data",i,"_count")), type = 'l', main = reg_uniq[i,'region_txt'])
+}
+
+
+```
+```{r}
+library(ggplot2)
+ggplot(data1_count, aes(x=iyear, y=count)) + 
+  geom_line() + 
+  geom_point()
+
+l = lm(count~iyear, data = data1_count)
+l2 = lm(count ~ iyear + I(iyear^2), data=data1_count)
+
+d = data1_count %>%
+  add_predictions(l, var="l") %>%
+  add_predictions(l2, var="l2")
+
+ggplot(data1_count, aes(x=iyear, y=count)) + 
+  geom_line() + 
+  geom_point() +
+  geom_line(data=d, aes(x=iyear, y=l), color="red", size=1.2) +
+  geom_line(data=d, aes(x=iyear, y=l2), color="blue", size=1.2)
+```
+

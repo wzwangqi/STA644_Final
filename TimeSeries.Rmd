@@ -8,18 +8,38 @@ output: pdf_document
 ```{r}
 library(dplyr)
 
-data = read.csv('~/Documents/Duke/17Spring/STA644/GTD_0616dist/globalterrorismdb_0616dist.csv', header = T)
+data = read.csv('globalterrorismdb_0616dist.csv', header = T)
 regions = data[,c('region','region_txt')]
 reg_uniq = unique(regions) 
 reg_uniq = reg_uniq[order(reg_uniq$region),]
 n = nrow(reg_uniq)
 
+
+
 for (i in 1:n){
   var = paste0("data",i,"_count")
+  var1 = paste0("data",i,"_month")
   assign(var, data %>% filter(region == i) %>% group_by(iyear) %>% summarise(count = n()))
+  assign(var1, data %>% filter(region == i) %>% group_by(iyear, imonth) %>% summarise(count = n()))
+}
+
+for (i in 1:n){
+  use = get(paste0("data",i,"_month"))
+  use = use[which(use$imonth != 0),]
+  assign(paste0("data",i,"_month"),use)
+}
+
+for(i in 1:n){
+  d = get(paste0("data",i,"_month"))
+  assign(paste0("ts",i),ts(d$count, frequency = 12, start = c(1970,1)))
 }
 
 par(mfrow = c(3,4))
+
+for(i in 1:n){
+  plot(get(paste0("ts",i)),  main = reg_uniq[i,'region_txt'], ylab = "count")
+}
+
 for(i in 1:n){
   plot(get(paste0("data",i,"_count")), type = 'l', main = reg_uniq[i,'region_txt'])
 }
@@ -107,7 +127,7 @@ multiplot(r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12, cols = 4)
 
 
 ```{r}
-par(mfrow = c(3,4))
+par(mfrow = c(3,4),mar=c(1,2,3,1))
 
 for(i in 1:n){
   var = paste0("diff",i)
@@ -128,6 +148,7 @@ for(i in 1:n){
   pacf(data_diff,main = reg_uniq[i,'region_txt'])
 }
 ```
+
 ```{r}
 library(forecast)
 # par(mfrow=c(2,2))
@@ -146,6 +167,13 @@ for(i in 1:n){
 ```{r}
 
 par(mfrow = c(3,4))
+
+# acf(pmts,100)
+# acf(diff(diff(pmts)),100)
+# pacf(diff(diff(pmts)),100)
+# spectrum(pmts)
+# a=spec.pgram(diff(pmts),taper=0,log="no",main="Raw Periodogram")
+
 
 # North America
 testarma=Arima(data1_count$count,order=c(1,1,1),seasonal=list(order=c(0,0,1),period=6))
@@ -221,5 +249,7 @@ for (i in 1:n){
   pacf(testarma_res)
 }
 ```
+
+
 
 

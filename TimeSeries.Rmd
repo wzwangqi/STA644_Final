@@ -4,18 +4,23 @@ author: "Qi Wang"
 date: "4/21/2017"
 output: pdf_document
 ---
-
 ```{r}
 library(dplyr)
+library(forecast)
+library(ggplot2)
+library(modelr)
+library(tidyr)
+```
 
+```{r}
+#Load data
 data = read.csv('globalterrorismdb_0616dist.csv', header = T)
 regions = data[,c('region','region_txt')]
 reg_uniq = unique(regions) 
 reg_uniq = reg_uniq[order(reg_uniq$region),]
 n = nrow(reg_uniq)
 
-
-
+# Create yearly and monthly data
 for (i in 1:n){
   var = paste0("data",i,"_count")
   var1 = paste0("data",i,"_month")
@@ -85,9 +90,6 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 ```
 
 ```{r}
-library(ggplot2)
-library(modelr)
-library(tidyr)
 
 for(i in 1:12){
   data_in_use = get(paste0("data",i,"_count"))
@@ -126,7 +128,13 @@ multiplot(r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12, cols = 4)
 
 
 
+
+
+
+There is obvious drift in the original time series. For fulfilling stationarity, we have visualize the difference of the original data. Corresponding ACF and PACF are also plotted for modeling.
 ```{r}
+# ACF and PACF for yearly data
+
 par(mfrow = c(3,4),mar=c(1,2,3,1))
 
 for(i in 1:n){
@@ -149,12 +157,10 @@ for(i in 1:n){
 }
 ```
 
+
+A periodogram can be used to identify the dominant periods (or frequencies) of a time series.  It is a helpful tool in spectral analysis to detect cyclical behavior. Typically the time series are observed in time domain, but it can also be transformed to the frequency domain by Fourier Transforamtion. If there is significant peak at certain frequency, there may be significant periodicity in the series.
 ```{r}
-library(forecast)
-# par(mfrow=c(2,2))
-# # acf(pmts,100)
-# acf(diff(diff(pmts)),100)
-# pacf(diff(diff(pmts)),100)
+# Periodogram for yearly data
 par(mfrow = c(3,4))
 for(i in 1:n){
   data_diff = get(paste0("diff",i))
@@ -164,16 +170,13 @@ for(i in 1:n){
 
 ```
 
+
+
+Based on observing the ACF, PACF and periodogram, by grid searching on a small range, here we have presented the best models. It turns out to have relatively low AIC values and the residuals are not autocorrelated. Thus, the models are good enough for us to use for forecast.
 ```{r}
+# (S)ARIMA modeling for 12 regions
 
 par(mfrow = c(3,4))
-
-# acf(pmts,100)
-# acf(diff(diff(pmts)),100)
-# pacf(diff(diff(pmts)),100)
-# spectrum(pmts)
-# a=spec.pgram(diff(pmts),taper=0,log="no",main="Raw Periodogram")
-
 
 # North America
 testarma=Arima(data1_count$count,order=c(1,1,1),seasonal=list(order=c(0,0,1),period=6))
@@ -241,6 +244,7 @@ plot.forecast(pmdarmaforecast,main=reg_uniq[12,'region_txt'])
 ```
 
 ```{r}
+# Checking modeling residuals
 par(mfrow=c(1,3), mar=c(2,4,6,2))
 for (i in 1:n){
   testarma_res = get(paste0("testarma_res",i))
@@ -256,9 +260,10 @@ for (i in 1:n){
 
 
 
-Modeling Monthly
-
+Similarly, we have also constructed models on the monthly data.
 ```{r}
+# ACF and PACF for monthly data
+
 par(mfrow = c(3,4),mar=c(1,2,3,1))
 
 for(i in 1:n){
@@ -282,11 +287,7 @@ for(i in 1:n){
 ```
 
 ```{r}
-library(forecast)
-# par(mfrow=c(2,2))
-# # acf(pmts,100)
-# acf(diff(diff(pmts)),100)
-# pacf(diff(diff(pmts)),100)
+# Periodogram for monthly data
 par(mfrow = c(3,4))
 for(i in 1:n){
   data_diff = get(paste0("diff",i))
@@ -297,88 +298,71 @@ for(i in 1:n){
 ```
 
 ```{r}
+# (S)ARIMA modeling for 12 regions
 
 par(mfrow = c(3,4))
 
-# acf(pmts,100)
-# acf(diff(diff(pmts)),100)
-# pacf(diff(diff(pmts)),100)
-# spectrum(pmts)
-# a=spec.pgram(diff(pmts),taper=0,log="no",main="Raw Periodogram")
-
-
 # North America
-testarma=Arima(data1_count$count,order=c(1,1,1),seasonal=list(order=c(0,0,1),period=6))
+testarma=Arima(data1_month$count,order=c(5,1,1))
 testarma_res1 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[1,'region_txt'])
 
 
-testarma=Arima(data2_count$count,order=c(0,1,1),seasonal=list(order=c(1,0,1),period=2))
+testarma=Arima(data2_month$count,order=c(5,1,5),seasonal=list(order=c(1,0,1),period=2))
 testarma_res2 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[2,'region_txt'])
 
-testarma=Arima(data3_count$count,order=c(5,1,1),seasonal=list(order=c(2,0,1),period=4))
+
+testarma=Arima(data3_month$count,order=c(7,1,5),seasonal=list(order=c(2,0,1),period=4))
 testarma_res3 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[3,'region_txt'])
 
-testarma=Arima(data4_count$count,order=c(3,1,3))
+testarma=Arima(data4_month$count,order=c(5,1,2),seasonal=list(order=c(1,0,1),period=3))
 testarma_res4 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[4,'region_txt'])
 
-testarma=Arima(data5_count$count,order=c(1,1,1),seasonal=list(order=c(2,0,1),period=4))
+testarma=Arima(data5_month$count,order=c(6,1,1))
 testarma_res5 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[5,'region_txt'])
 
-testarma=Arima(data6_count$count,order=c(0,1,2),seasonal=list(order=c(2,0,1),period=6))
+testarma=Arima(data6_month$count,order=c(5,1,5),seasonal=list(order=c(2,0,1),period=2))
 testarma_res6 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[6,'region_txt'])
 
-testarma=Arima(data7_count$count,order=c(1,1,1),seasonal=list(order=c(2,0,1),period=2))
+testarma=Arima(data7_month$count,order=c(5,1,5),seasonal=list(order=c(1,0,1),period=3))
 testarma_res7 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[7,'region_txt'])
 
-testarma=Arima(data8_count$count,order=c(5,2,3))
+testarma=Arima(data8_month$count,order=c(3,1,5),seasonal=list(order=c(1,0,1),period=3))
 testarma_res8 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[8,'region_txt'])
 
-testarma=Arima(data9_count$count,order=c(3,1,2),seasonal=list(order=c(0,0,1),period=2))
+testarma=Arima(data9_month$count,order=c(2,1,5),seasonal=list(order=c(0,0,1),period=3))
 testarma_res9 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[9,'region_txt'])
 
-testarma=Arima(data10_count$count,order=c(5,1,5),seasonal=list(order=c(3,0,1),period=4))
+testarma=Arima(data10_month$count,order=c(5,1,5),seasonal=list(order=c(1,0,1),period=2))
 testarma_res10 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[10,'region_txt'])
 
-testarma=Arima(data11_count$count,order=c(5,1,3),seasonal=list(order=c(2,0,1),period=2))
+testarma=Arima(data11_month$count,order=c(3,1,3),seasonal=list(order=c(1,0,1),period=3))
 testarma_res11 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[11,'region_txt'])
 
-testarma=Arima(data12_count$count,order=c(2,1,3))
+testarma=Arima(data12_month$count,order=c(3,1,2),seasonal=list(order=c(0,0,1),period=2))
 testarma_res12 = testarma$residuals
 pmdarmaforecast=forecast.Arima(testarma,h=5)
 plot.forecast(pmdarmaforecast,main=reg_uniq[12,'region_txt'])
-
-
-```
-
-```{r}
-par(mfrow=c(1,3), mar=c(2,4,6,2))
-for (i in 1:n){
-  testarma_res = get(paste0("testarma_res",i))
-  plot(testarma_res,main=reg_uniq[i,'region_txt'])
-  acf(testarma_res)
-  pacf(testarma_res)
-}
 ```
 

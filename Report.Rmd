@@ -345,7 +345,7 @@ plot.forecast(pmdarmaforecast,main=reg_uniq[12,'region_txt'])
 Yearly Forecast
 \end{center}
 
-```{r,fig.height=8,fig.width=7,echo=FALSE}
+```{r,fig.height=9,fig.width=7,echo=FALSE}
 # Checking modeling residuals
 par(mfrow=c(6,3), mar=c(2,4,6,2))
 for (i in 1:n){
@@ -398,6 +398,7 @@ Differenced Data
 \end{center}
 
 ```{r, fig.height=8,fig.width=7, echo=F}
+par(mfrow = c(4,3),mar=c(1,2,3,1))
 for(i in 1:n){
   data_diff = get(paste0("diff",i))
   acf(data_diff,main = reg_uniq[i,'region_txt'])
@@ -409,6 +410,7 @@ acf
 \end{center}
 
 ```{r, fig.height=8,fig.width=7, echo=F}
+par(mfrow = c(4,3),mar=c(1,2,3,1))
 for(i in 1:n){
   data_diff = get(paste0("diff",i))
   pacf(data_diff,main = reg_uniq[i,'region_txt'])
@@ -437,7 +439,7 @@ Periodogram
 ```{r, fig.height=8,fig.width=7, echo = F}
 # (S)ARIMA modeling for 12 regions
 
-par(mfrow = c(3,4))
+par(mfrow = c(4,3))
 
 # North America
 testarma=Arima(ts1,order=c(5,1,1))
@@ -507,7 +509,7 @@ plot.forecast(pmdarmaforecast,main=reg_uniq[12,'region_txt'])
 Forecast - Monthly
 \end{center}
 
-```{r, fig.height=8,fig.width=7, echo = F}
+```{r, fig.height=9,fig.width=7, echo = F}
 # Checking modeling residuals
 par(mfrow=c(6,3), mar=c(2,4,6,2))
 for (i in 1:n){
@@ -519,5 +521,5 @@ for (i in 1:n){
 ```
 
 \begin{center}
-Residual
+Residuals
 \end{center}

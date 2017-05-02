@@ -414,9 +414,9 @@ title(main="spline model prediction",xlab="Longitude", ylab = "Latitude")
 
 Instead of trying to explain the spatial patterns of terroristic attacks using splines, we use spline to predict the spatial pattern of success rate of attacks across the Iraq. As can be seen in the above plots, most of the attacks concentrating in the center of Iraq have high success rates. Not surprisingly, the capital city, Baghdad, is also located in the center of Iraq. Only a small amount of attacks took place in the south of Iraq but with high success rate. However, although a lot of attacks took place on the northern provinces compared to the southern region, the success rate is relatively low.
 
-## Conclusion
+## Conclusion and Discussion
 
-For this project, we utilized methods learnt from this class using both time series and spatial models and applied them on the terrorist attack dataset from Global Terrorism Database. We used ARIMA models to forecast attack counts for different regions of the world and were able to obtain models that match the current global political situations. 
+For this project, we utilized methods learnt from this class using both time series and spatial models and applied them on the terrorist attack dataset from Global Terrorism Database. We used ARIMA models to forecast attack counts for different regions of the world and were able to obtain models that match the current global political situations. In the spatial context, both frequentist and bayesian version of Car and Mar model can be able to capture the spatial patterns of terroristic attacks. In addition, spline model has been used to predict the successful rate if a terrorstic attack took place based on the observed data. In future, we could try bayesian version spline model to do the predication. Further compared the results with the regular spline model since the regular spline model is not good at uncertainty prediction.
 
 This project sheds some light on the complicated situation of terrorist attacks with models that are easy to intepret. To improve the results of our models, we can take further steps such as incorporating outside sources of data in the analysis and further tuning of the models. 
 

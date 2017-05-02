@@ -7,13 +7,13 @@ output: pdf_document
 
 ## Introduction
 
-This project aims to explore and analyze the dataset from Global Terrorism Database that contains details on every terrorist activity since 1970. There are two parts of the project. The first part is creating time series models for aggregated count data for terrorist activities in each region of the world. We aggregated the incidents to yearly and monthly basis count data and built ARIMA models with seasonal trends to forecast the number of attacks in the future years. The second part focuses on the spatial pattern of these terroristic attacks in Iraq which has suffered the most from the terrorism: over 18000 attacks took place in Iraq from 1970 to 2015. In addition, we also incorporate the civilian deaths statistics from Iraq Body Count website, which could be used to do inference between the number of attacks and total civilian deaths from violence. In order to capture the spatial patterns, some spatial models which include SAR, CAR and their corresponding bayesian version models has then been implemented. In the GTD dataset, there is a categorical variable which is called `success`. Success of a terrorist strike is defined according to the tangible effects of the attack, which is used to describe whether the incident was successful. Based on this information, we also fit a spline model which can be used to predict whether or not the attack type took place in each area of Iraq.
+This project aims to explore and analyze the dataset from Global Terrorism Database that contains details on every terrorist activity since 1970. There are two parts of the project. The first part is creating time series models for aggregated count data for terrorist activities in each region of the world. We aggregated the incidents to yearly and monthly basis count data and built ARIMA models with seasonal trends to forecast the number of attacks in the future years. The second part focuses on the spatial pattern of these terroristic attacks in Iraq, which is a country that suffered the most from terrorism: over 18,000 attacks took place in Iraq from 1970 to 2015. In addition, we incorporated the civilian deaths dataset from the Iraq Body Count website, which could be used to conduct inference on the number of attacks and the total civilian deaths from violence. In order to capture the spatial patterns, several spatial models including SAR, CAR and their corresponding bayesian version models have been implemented. In the GTD dataset, there is a categorical variable which is called `success`. Success of a terrorist strike is defined with respect to the tangible effects of the attack. Based on this variable, we also fit a spline model which can be used to predict which areas of Iraq have high success rate in terrorist attacks.
 
 ## Data
 The Global Terrorism Database (GTD) is maintained by the National Consortium for the Study of Terrorism and Responses to Terrorism (START). The database collects from media articles and electronic archives, and to a lesser extent, existing data sets, secondary source materials such as books and journals, and legal documents. Each row represents one terrorist incident, and the variables include incident date, incident information, incident location, attack information, weapon information, target information, and perpetrator information. There are 156,772 incidents ranging from 1970 to 2015. The GTD defines a terrorist attack as the threatened or actual use of illegal force and violence by a non\-state actor to attain a political, economic, religious, or social goal through fear, coercion, or intimidation. In order to consider an incident for inclusion in the GTD, all three of the following attributes must be present: the incident must be intentional, the incident must entail some level of violence or immediate threat of violence, and the perpetrators of the incidents must be sub\-national actors. Incidents occurring in both the same geographic and temporal point will be regarded as a single incident, but if either the time of occurrence of incidents or their locations are discontinuous, the events will be regarded as separate incidents.
 
 
-We also incorporated another source of data for the spatial analysis. Iraq Body Count(IBC) maintains the world's largest public database of violent civilian deaths. Its data drawn from cross-checked media reports, hospital, morgue, NGO and official figures or records. IBC can allow user to specify the number of civilian deaths for each province. Hence, we are able to cumulatively sum the number of civilian deaths for each province of Iraq and use these data fit models.
+We also incorporated another source of data for the spatial analysis from Iraq Body Count. Iraq Body Count (IBC) maintains the world's largest public database of violent civilian deaths. Its data drawn from cross-checked media reports, hospital, morgue, NGO and official figures or records. IBC can allow user to specify the number of civilian deaths for each province. Hence, we are able to cumulatively sum the number of civilian deaths for each province of Iraq and use these data to fit models.
 
 ## Methodology
 
@@ -70,7 +70,7 @@ Where $W$ is weight matrices and $\sigma^2$ is variance.
 
 #### Spline 
 
-Spline provides a flexible way of estimating the underlying regression function $r(x)=E(Y|X=x)$. It estimates values using a mathematical function that minimizes overall surface curvature. This results in a smooth surface that passes exactly through the input points. In the spatial context, It can predict ridges and valleys in the data and is the best method for representing the smoothly varying surfaces(Childs, 2014). The general spline formula is as following:$$S(x,y)=T(x,y)+\sum_{j=1}^{N}\lambda_jR(r_j),$$where N is the number of points, $\lambda$ is the coefficients, and $r_j$ is the distance from the point (x,y) to the $j^{th}$ point. $T(x,y)$ and $R(r)$ represent tension option and regularized option, respectively. They are defined differently and really depend on the specific context.
+Spline provides a flexible way of estimating the underlying regression function $r(x)=E(Y|X=x)$. It estimates values using a mathematical function that minimizes overall surface curvature. This results in a smooth surface that passes exactly through the input points. In the spatial context, it can predict ridges and valleys in the data and is the best method for representing the smoothly varying surfaces(Childs, 2014). The general spline formula is as follows: $$S(x,y)=T(x,y)+\sum_{j=1}^{N}\lambda_jR(r_j),$$ where N is the number of points, $\lambda$ is the coefficients, and $r_j$ is the distance from the point (x,y) to the $j^{th}$ point. $T(x,y)$ and $R(r)$ represent tension option and regularized option, respectively. They are defined differently and really depend on the specific context.
 
 ## Result
 
@@ -161,7 +161,7 @@ Yearly Forecast
 ### Part II: Iraq Spatial Analysis
 
 #### Spatial Autocorrelation
-Before we apply any statistical model to detect spatial pattern of terroristic attacks in Iraq, we use *Moran's I* and *Geary's C* to measure spatial autocorrelation of terroristic attack observation in Iraq.
+Before we apply any statistical model to detect spatial patterns of terroristic attacks in Iraq, we use *Moran's I* and *Geary's C* to measure spatial autocorrelation of terroristic attack observation in Iraq.
 
 Values of Moran's I range from $-1$ to $+1$. Negative values indicate negative spatial autocorrelation and positive values indicate positive spatial autocorrelation. A zero value indicates a random spatial pattern. 
 
@@ -173,7 +173,7 @@ The value of Geary's C lies between 0 and 2. 1 means no spatial autocorrelation.
 | Geary's C     | 0.77          |
 Table: Measurement of Spatial Autocorrelation
 
-In our Iraq terroristic attack dataset, we calculate its Moran's I and Geary's C. Table.1 shows thers is spatial pattern among the observations. Therefore, we decide to fit the *CAR*, *SAR* and *Spline* models to explore terroristic attacks in Iraq. 
+In our Iraq terroristic attack dataset, we calculate its Moran's I and Geary's C. Table.1 shows there is spatial pattern among the observations. Therefore, we decide to fit the *CAR*, *SAR* and *Spline* models to explore terroristic attacks in Iraq. 
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
 # Load packages
 library(dplyr)
@@ -199,8 +199,8 @@ library(astsa)
 library(fields)
 library(readr)
 library(sf)
-globalterrorismdb_0616dist = readr::read_csv("~/Documents/Study/2016Summer/Terrorism/GTD_0616dist/globalterrorismdb_0616dist.csv")
-load("/Users/andrea/Documents/Study/2017Spring/STA644/iraq1.RData")
+globalterrorismdb_0616dist = readr::read_csv("globalterrorismdb_0616dist.csv")
+load("iraq1.RData")
 W = 1*st_touches(irq1$geometry, sparse=FALSE)
 listW = mat2listw(W)
 
@@ -208,7 +208,7 @@ listW = mat2listw(W)
 
 
 ####Sar model with population density as predictor
-In the GTD dataset, most of columns are categorical variables, which can not be used as the predictors in this context. Based on our common knowledge, we consider that most of terroristic attacks took place in high population density area in order to reach their goal: attracting more attention from others. Therefore, we first use population density of each province in Iraq as the predictor to predict the number of attacks.
+In the GTD dataset, most of the columns are categorical variables, which can not be used as predictors in this context. Based on common knowledge, we speculate that most of the terroristic attacks took place in high population density area in order to reach their goal: attracting more attention from others. Therefore, we first use population density of each province in Iraq as the predictor to predict the number of attacks.
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
 irq_sar_pop = spautolm(formula = count ~ density11, data = irq1, 
                   listw = listW, family = "SAR")
@@ -245,7 +245,7 @@ ggplot() + geom_sf(data=irq1, aes(fill=headcount)) + ggtitle("# Civilian Deaths 
 ```
 
 
-Given there is spatial pattern among terroristic attacks in Iraq, we use the number of civilian death from violence to predict the number of attack in Iraq. In this case, we use CAR and SAR by both Frequentist and Bayesian ways to predict it.
+Given there is spatial pattern among terroristic attacks in Iraq, we use the number of civilian deaths from violence to predict the number of attacks in Iraq. In this case, we apply CAR and SAR using both Frequentist and Bayesian approaches to predict.
 
 ```{r,message=FALSE, warning=FALSE, echo=FALSE}
 grid.arrange(
@@ -352,7 +352,7 @@ irq1$jags_resid = irq1$count - y_pred$post_mean
 ```
 
 
-As the graphs show, the predicted maps are similar to the observed attack map. However, the predicted maps from the CAR and SAR models by Frequentist approach are more accurate than the models by Bayesian approach. Table.2 shows Car model by the Frequentist approach performs best among all models in terms of RMSE. If considering Moran's I of Residual and Geary's C of Residual, SAR model by the Frequentist approach performs best overall since there is almost no hidden spatial pattern in its residual.
+As the graphs show, the predicted maps are similar to the observed attack map. However, the predicted maps from the CAR and SAR models by Frequentist approach are more accurate than the models by Bayesian approach. Table.2 shows Car model using the Frequentist approach performs best among all models in terms of RMSE. If considering Moran's I of Residual and Geary's C of Residual, SAR model by the Frequentist approach performs best overall, since there is almost no hidden spatial pattern in its residual.
 
 
 ```{r,message=FALSE, warning=FALSE, echo=FALSE}
@@ -365,7 +365,7 @@ grid.arrange(
 
 ```
 
-However, we can still observe some hidden spatial pattern from Moran's I of Residual and Geary's C of Residual in the JAGS models. Moreover, the RMSE of the JAGS models are also more than 40% higher than Frequentist models. We think it might be cause by limited iteration. The performance of the JAGS model might be better, if we add more iterations.
+However, we can still observe some hidden spatial pattern from Moran's I of Residual and Geary's C of Residual in the JAGS models. Moreover, the RMSE of the JAGS models is also more than 40% higher than that of Frequentist models. We think it might be caused by limited iteration. The performance of the JAGS model might be better, if we add more iterations.
 
 
 | Model         | RMSE          | Moran's I of Residual| Geary's C of Residual|
@@ -378,7 +378,7 @@ Table: RMSE, Moran's I of Residual and Geary's C of Residual
 
 ####Spline model results
 
-As mentioned before, spline model is like bending a sheet of rubber so that it passed through the points while minimizing the total curvature of the surface. Compared to the SAR and CAR models, the spline model can be able to capture the spatial pattern more precisely. Especially, for predicting ridges and valleys, the spline will perform much better than SAR and CAR model. In this project, spatial patterns for these terroristic attacks are highly similar to the rugged terrain since these attacks always take place in the area where it has high density of either population or energy. 
+As mentioned before, spline model is like bending a sheet of rubber so that it passed through the points while minimizing the total curvature of the surface. Compared to the SAR and CAR models, the spline model can capture the spatial pattern more precisely. Especially for predicting ridges and valleys, the spline will perform much better than SAR and CAR model. In this project, spatial patterns for these terroristic attacks are highly similar to the rugged terrain since these attacks always take place in the area where it has high density of either population or energy. 
 
 
 ```{r,message=FALSE, warning=FALSE, echo=FALSE}
@@ -412,7 +412,7 @@ title(main="spline model prediction",xlab="Longitude", ylab = "Latitude")
 ```
 
 
-Instead of trying to explain the spatial patterns of terroristic attacks by using spline, we use spline to predict the spatial pattern of successful rate of attacks across the Iraq. As can be seen in the above plots, most of attacks concentrate on the middle of the Iraq with high successful rate. Not surprisingly, the capital city, baghdad, is also located in the center of Iraq. Only a small amount of attacks took place on the south of Iraq but with high successful rate. However, although a lot of attacks took place on the northern provinces compared to the southern region, the success rate is relatively low.
+Instead of trying to explain the spatial patterns of terroristic attacks using splines, we use spline to predict the spatial pattern of success rate of attacks across the Iraq. As can be seen in the above plots, most of the attacks concentrating in the center of Iraq have high success rates. Not surprisingly, the capital city, Baghdad, is also located in the center of Iraq. Only a small amount of attacks took place in the south of Iraq but with high success rate. However, although a lot of attacks took place on the northern provinces compared to the southern region, the success rate is relatively low.
 
 ## Conclusion
 

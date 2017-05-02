@@ -82,7 +82,7 @@ Looking at the plots of the original data in Appendix, we can see that there are
 
 Based on observing the ACF, PACF and periodogram, by grid searching on a small range, here we have presented the best models. For the models based on yearly data, they turn out to have relatively low AIC values and the residuals are not autocorrelated. Thus, the models are good enough for us to use for forecast. For the monthly data, the residuals are not behaving as nicely looking at the acf and pacfs, and further tuning or more complicated models could be used to enhance the performance in the future. All of these plots can be found in the Appendix.
 
-The plot below shows the yearly forecasted trends for the regions, and they seem to match up with our expectations of the number of terrorist attacks in the region. For instance, due to influx of refugees to Western Europe and complexity in the international politics of the region, an increase in the number of terrorist incidents could be expected in Western Europe as indicated by the model. However, we need to keep in mind that terrorist attacks have complicated motives and are triggered by many elements and the models are just a quick look at the trends to provide some insights in the matter. 
+The plot below shows the yearly forecasted trends for the regions, and they seem to match up with our expectations of the number of terrorist attacks in the region. For instance, due to influx of refugees to Western Europe and complexity in the international politics of the region, an increase in the number of terrorist incidents could be expected in Western Europe as indicated by the model. Since we do not have ground truth on the actual terrorist attack counts in the future, we cannot validate our prediction. We also need to keep in mind that terrorist attacks have complicated motives and are triggered by many elements and the models are just a quick look at the trends to provide some insights in the matter. 
 
 ```{r, fig.height=6.5,fig.width=6, echo = F}
 # (S)ARIMA modeling for 12 regions
@@ -413,6 +413,12 @@ title(main="spline model prediction",xlab="Longitude", ylab = "Latitude")
 
 
 Instead of trying to explain the spatial patterns of terroristic attacks by using spline, we use spline to predict the spatial pattern of sucessful rate of attacks across the Iraq. As can be seen in the above plots, most of attacks concentrate on the middle of the Iraq with high successful rate. Not surprisingly, the capital city, baghdad, is also located in the center of Iraq. Only a small amount of attacks took place on the south of Iraq but with high successful rate. However, although a lot of attacks took place on the northern provinces compard to the southern region, the success rate is relatively low.
+
+## Conclusion
+
+For this project, we utilized methods learnt from this class using both time series and spatial models and applied them on the terrorist attack dataset from Global Terrorism Database. We used ARIMA models to forecast attack counts for different regions of the world and were able to obtain models that match the current global political situations. 
+
+This project sheds some light on the complicated situation of terrorist attacks with models that are easy to intepret. To improve the results of our models, we can take futher steps such as incorporating outside sources of data in the analysis and further tuning of the models. 
 
 \newpage
 ## Appendix

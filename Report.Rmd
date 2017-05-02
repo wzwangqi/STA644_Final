@@ -7,13 +7,13 @@ output: pdf_document
 
 ## Introduction
 
-This project aims to explore and analyze the dataset from Global Terrorism Database that contains details on every terrorist activity since 1970. There are two parts of the project. The first part is creating time series models for aggregated count data for terrorist activities in each region of the world. We aggregated the incidents to yearly and monthly basis count data and built ARIMA models with seasonal trends to forecast the number of attacks in the future years. The second part focuses on the spatial pattern of these terroristic attacks in Iraq which has sufferd the most from the terrorism: over 18000 attacks took place in Iraq from 1970 to 2015. In addition, we also incorporate the civilian deaths statistics from Iraq Body Count website, which could be used to do infernce between the number of attacks and total civilian deaths from violence. In order to capture the spatial patterns, some spatial models which include SAR, CAR and their corresponding bayesian version models has then been implemented. In the GTD dataset, there is a categorical varible which is called `success`. Success of a terrorist strike is defined according to the tangible effects of the attack, which is used to describe whether the incident was successful. Based on this information, we also fit a spline model which can be used to predict whether or not the attack type took place in each area of Iraq.
+This project aims to explore and analyze the dataset from Global Terrorism Database that contains details on every terrorist activity since 1970. There are two parts of the project. The first part is creating time series models for aggregated count data for terrorist activities in each region of the world. We aggregated the incidents to yearly and monthly basis count data and built ARIMA models with seasonal trends to forecast the number of attacks in the future years. The second part focuses on the spatial pattern of these terroristic attacks in Iraq which has suffered the most from the terrorism: over 18000 attacks took place in Iraq from 1970 to 2015. In addition, we also incorporate the civilian deaths statistics from Iraq Body Count website, which could be used to do inference between the number of attacks and total civilian deaths from violence. In order to capture the spatial patterns, some spatial models which include SAR, CAR and their corresponding bayesian version models has then been implemented. In the GTD dataset, there is a categorical variable which is called `success`. Success of a terrorist strike is defined according to the tangible effects of the attack, which is used to describe whether the incident was successful. Based on this information, we also fit a spline model which can be used to predict whether or not the attack type took place in each area of Iraq.
 
 ## Data
 The Global Terrorism Database (GTD) is maintained by the National Consortium for the Study of Terrorism and Responses to Terrorism (START). The database collects from media articles and electronic archives, and to a lesser extent, existing data sets, secondary source materials such as books and journals, and legal documents. Each row represents one terrorist incident, and the variables include incident date, incident information, incident location, attack information, weapon information, target information, and perpetrator information. There are 156,772 incidents ranging from 1970 to 2015. The GTD defines a terrorist attack as the threatened or actual use of illegal force and violence by a non\-state actor to attain a political, economic, religious, or social goal through fear, coercion, or intimidation. In order to consider an incident for inclusion in the GTD, all three of the following attributes must be present: the incident must be intentional, the incident must entail some level of violence or immediate threat of violence, and the perpetrators of the incidents must be sub\-national actors. Incidents occurring in both the same geographic and temporal point will be regarded as a single incident, but if either the time of occurrence of incidents or their locations are discontinuous, the events will be regarded as separate incidents.
 
 
-We also incorporated another source of data for the spatial analysis. Iraq Body Count(IBC) maintains the world's lagest public database of violent civilian deaths. Its data drawn from cross-checked media reports, hospital, morgue, NGO and official figures or records. IBC can allow user to specify the number of civilian deathes for each province. Hence, we are able to cumulatively sum the number of civilian deaths for each province of Iraq and use these data fit models.
+We also incorporated another source of data for the spatial analysis. Iraq Body Count(IBC) maintains the world's largest public database of violent civilian deaths. Its data drawn from cross-checked media reports, hospital, morgue, NGO and official figures or records. IBC can allow user to specify the number of civilian deaths for each province. Hence, we are able to cumulatively sum the number of civilian deaths for each province of Iraq and use these data fit models.
 
 ## Methodology
 
@@ -50,7 +50,7 @@ $$
 
 Originated from time series analysis, *Simultaneous Autoregressive (SAR)* model and *Conditional Autoregressive (CAR)* model have been applied and extended by different fields such as econometrics, geography and medical statistics. Analogy to *Autoregressive model*, the CAR and SAR models include spatial neighboring observations. Here we fit the SAR and CAR model by both Frequentist and Bayesian way to discover spatial patterns of terroristic attacks in Iraq.
 
-Similar to kernel regression and k-nearest-neigbors regression, *Smoothing Spline* model is able to flexibly estimate underlying regression function $f(x)$. We used *Smoothing Spline* model to discover how ``successful terroristic attack'' distributes in Iraq.
+Similar to kernel regression and k-nearest-neighbors regression, *Smoothing Spline* model is able to flexibly estimate underlying regression function $f(x)$. We used *Smoothing Spline* model to discover how ``successful terroristic attack'' distributes in Iraq.
 
 #### SAR and CAR
 
@@ -70,7 +70,7 @@ Where $W$ is weight matrices and $\sigma^2$ is variance.
 
 #### Spline 
 
-Spline provides a flexible way of estimating the underlying regression function $r(x)=E(Y|X=x)$. It estimates values using a mathematical function that minimizes overall surface curvature. This results in a smooth surface that passes exactly through the input points. In the spatio context, It can predict ridges and valleys in the data and is the best method for representing the smoothly varying surfaces(Childs, 2014). The general spline formular is as following:$$S(x,y)=T(x,y)+\sum_{j=1}^{N}\lambda_jR(r_j),$$where N is the number of points, $\lambda$ is the coefficients, and $r_j$ is the distance from the point (x,y) to the $j^{th}$ point. $T(x,y)$ and $R(r)$ represent tension option and regularized option, respectively. They are defined differently and really depend on the specific context.
+Spline provides a flexible way of estimating the underlying regression function $r(x)=E(Y|X=x)$. It estimates values using a mathematical function that minimizes overall surface curvature. This results in a smooth surface that passes exactly through the input points. In the spatial context, It can predict ridges and valleys in the data and is the best method for representing the smoothly varying surfaces(Childs, 2014). The general spline formula is as following:$$S(x,y)=T(x,y)+\sum_{j=1}^{N}\lambda_jR(r_j),$$where N is the number of points, $\lambda$ is the coefficients, and $r_j$ is the distance from the point (x,y) to the $j^{th}$ point. $T(x,y)$ and $R(r)$ represent tension option and regularized option, respectively. They are defined differently and really depend on the specific context.
 
 ## Result
 
@@ -78,7 +78,7 @@ Spline provides a flexible way of estimating the underlying regression function 
 
 The first part of the project is to build ARIMA models for all twelve regions on aggregated counts of the incidents and perform forecasts for the next several years. We performed the analysis on both yearly and monthly aggregated count data.
 
-Looking at the plots of the original data in Appendix, we can see that there are obvious drifts in the original time series. For fulfilling stationarity, we have visualize the difference of the original data. After differencing, data does seem to appear to have a mean at 0. Corresponding ACF and PACF are also plotted for modeling. Periodograms are plotted, and they can be used to identify the dominant periods (or frequencies) of a time series.  Periodogram is a helpful tool in spectral analysis to detect cyclical behavior. Typically the time series are observed in time domain, but it can also be transformed to the frequency domain by Fourier Transforamtion. If there is significant peak at certain frequency, there may be significant periodicity in the series.
+Looking at the plots of the original data in Appendix, we can see that there are obvious drifts in the original time series. For fulfilling stationarity, we have visualize the difference of the original data. After differencing, data does seem to appear to have a mean at 0. Corresponding ACF and PACF are also plotted for modeling. Periodograms are plotted, and they can be used to identify the dominant periods (or frequencies) of a time series.  Periodogram is a helpful tool in spectral analysis to detect cyclical behavior. Typically the time series are observed in time domain, but it can also be transformed to the frequency domain by Fourier Transformation. If there is significant peak at certain frequency, there may be significant periodicity in the series.
 
 Based on observing the ACF, PACF and periodogram, by grid searching on a small range, here we have presented the best models. For the models based on yearly data, they turn out to have relatively low AIC values and the residuals are not autocorrelated. Thus, the models are good enough for us to use for forecast. For the monthly data, the residuals are not behaving as nicely looking at the acf and pacfs, and further tuning or more complicated models could be used to enhance the performance in the future. All of these plots can be found in the Appendix.
 
@@ -352,7 +352,7 @@ irq1$jags_resid = irq1$count - y_pred$post_mean
 ```
 
 
-As the graphs show, the predicted maps are similar to the observed attack map. However, the predicted maps from the CAR and SAR models by Frequentist approach are more accurate than the models by Bayesian approach. Table.2 shows Car model by the Frequentist approach proforms best among all models in terms of RMSE. If considering Moran's I of Residual and Geary's C of Residual, SAR model by the Frequentist approach proforms best overall since there is almost no hidden spatial pattern in its residual.
+As the graphs show, the predicted maps are similar to the observed attack map. However, the predicted maps from the CAR and SAR models by Frequentist approach are more accurate than the models by Bayesian approach. Table.2 shows Car model by the Frequentist approach performs best among all models in terms of RMSE. If considering Moran's I of Residual and Geary's C of Residual, SAR model by the Frequentist approach performs best overall since there is almost no hidden spatial pattern in its residual.
 
 
 ```{r,message=FALSE, warning=FALSE, echo=FALSE}
@@ -365,7 +365,7 @@ grid.arrange(
 
 ```
 
-However, we can still observe some hidden spatial pattern from Moran's I of Residual and Geary's C of Residual in the JAGS models. Moreover, the RMSE of the JAGS models are also more than 40% higher than Frequentist models. We think it might be cause by limited iteration. The proformance of the JAGS model might be better, if we add more iterations.
+However, we can still observe some hidden spatial pattern from Moran's I of Residual and Geary's C of Residual in the JAGS models. Moreover, the RMSE of the JAGS models are also more than 40% higher than Frequentist models. We think it might be cause by limited iteration. The performance of the JAGS model might be better, if we add more iterations.
 
 
 | Model         | RMSE          | Moran's I of Residual| Geary's C of Residual|
@@ -412,13 +412,13 @@ title(main="spline model prediction",xlab="Longitude", ylab = "Latitude")
 ```
 
 
-Instead of trying to explain the spatial patterns of terroristic attacks by using spline, we use spline to predict the spatial pattern of sucessful rate of attacks across the Iraq. As can be seen in the above plots, most of attacks concentrate on the middle of the Iraq with high successful rate. Not surprisingly, the capital city, baghdad, is also located in the center of Iraq. Only a small amount of attacks took place on the south of Iraq but with high successful rate. However, although a lot of attacks took place on the northern provinces compard to the southern region, the success rate is relatively low.
+Instead of trying to explain the spatial patterns of terroristic attacks by using spline, we use spline to predict the spatial pattern of successful rate of attacks across the Iraq. As can be seen in the above plots, most of attacks concentrate on the middle of the Iraq with high successful rate. Not surprisingly, the capital city, baghdad, is also located in the center of Iraq. Only a small amount of attacks took place on the south of Iraq but with high successful rate. However, although a lot of attacks took place on the northern provinces compared to the southern region, the success rate is relatively low.
 
 ## Conclusion
 
 For this project, we utilized methods learnt from this class using both time series and spatial models and applied them on the terrorist attack dataset from Global Terrorism Database. We used ARIMA models to forecast attack counts for different regions of the world and were able to obtain models that match the current global political situations. 
 
-This project sheds some light on the complicated situation of terrorist attacks with models that are easy to intepret. To improve the results of our models, we can take futher steps such as incorporating outside sources of data in the analysis and further tuning of the models. 
+This project sheds some light on the complicated situation of terrorist attacks with models that are easy to intepret. To improve the results of our models, we can take further steps such as incorporating outside sources of data in the analysis and further tuning of the models. 
 
 \newpage
 ## Appendix

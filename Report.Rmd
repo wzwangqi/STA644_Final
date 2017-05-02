@@ -37,7 +37,7 @@ ARMA(p,q): \quad\quad\\
 $$
 
 We used Autoregressive integrated moving average (ARIMA) to build our models, which is an extension of an $ARMA$ model to include differencing of degree $d$ to $y_t$ before including the autoregressive and moving average components. Differencing is
-$ \Delta y_t = y_t - y_{t-1} $, and $\Delta^d \, y_t$ is repeated applications of this operator. [1]
+$\Delta y_t = y_t - y_{t-1}$, and $\Delta^d \, y_t$ is repeated applications of this operator. [1]
 
 
 $$
@@ -217,23 +217,16 @@ library(forecast)
 library(ggplot2)
 library(modelr)
 library(tidyr)
-library(readr)
 library(spdep)
 library(magrittr)
-library(dplyr)
-library(modelr)
-library(ggplot2)
-library(tidyr)
 library(rjags)
 library(stringr)
 library(gridExtra)
-library(readr)
 library(purrr)
 library(forcats)
 library(forecast)
 library(astsa)
 library(fields)
-library(readr)
 library(sf)
 load("iraq1.RData")
 W = 1*st_touches(irq1$geometry, sparse=FALSE)
